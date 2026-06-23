@@ -1,0 +1,50 @@
+.wrapper {
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+.active {
+  background: var(--accent-soft);
+  color: var(--text-accent);
+  border-color: rgba(168, 85, 247, 0.3);
+  font-weight: 600;
+}
+
+.active:hover {
+  background: rgba(168, 85, 247, 0.18);
+  color: var(--text-accent);
+}

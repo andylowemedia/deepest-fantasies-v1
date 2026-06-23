@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/deepestfantasies
+      AUTH_SECRET: df-dev-secret-change-in-production
+      AUTH_URL: http://localhost:3000
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - df-network
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: deepestfantasies
+    volumes:
+      - ./docker/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d deepestfantasies"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - df-network
+
+networks:
+  df-network:
+    driver: bridge

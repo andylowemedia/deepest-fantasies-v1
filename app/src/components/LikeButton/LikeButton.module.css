@@ -1,0 +1,35 @@
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: rgba(236, 72, 153, 0.4);
+  color: #f472b6;
+  background: rgba(236, 72, 153, 0.08);
+}
+
+.liked {
+  color: #f472b6;
+  background: rgba(236, 72, 153, 0.12);
+  border-color: rgba(236, 72, 153, 0.35);
+}
+
+.liked:hover {
+  background: rgba(236, 72, 153, 0.18);
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
