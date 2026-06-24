@@ -1,0 +1,10 @@
+# Release skill config — non-secret, but holds internal infra (Jenkins URL, server
+# host, paths). Committed by default so deploy config travels with the repo.
+# Uncomment the next line to keep it out of git (e.g. for a public repo):
+# .claude/release.config.json
+/app/public/gallery/
+/app/public/profiles/
+/app/public/video/
+.DS_Store
+.idea
+docker/postgres/
