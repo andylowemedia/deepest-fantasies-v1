@@ -1,0 +1,37 @@
+{
+  "_comment": "Release-skill config for THIS project. NON-SECRET values only. Secrets (Jenkins token, AWS, SSH key) live in the environment / ~/.aws / ~/.ssh and are referenced by name. Fill every empty value.",
+
+  "git": {
+    "branch": "main"
+  },
+
+  "jenkins": {
+    "url": "",
+    "project": "",
+    "userEnv": "JENKINS_USER",
+    "tokenEnv": "JENKINS_TOKEN",
+    "discoverTimeoutSeconds": 180,
+    "pollSeconds": 30
+  },
+
+  "ecr": {
+    "repo": "",
+    "region": "",
+    "profile": "",
+    "imageTag": "{version}"
+  },
+
+  "deploy": {
+    "sshHost": "",
+    "composePath": "",
+    "service": ""
+  },
+
+  "verify": {
+    "domain": "",
+    "healthcheckPath": "",
+    "expectStatus": 200,
+    "watchSeconds": 180,
+    "sampleSeconds": 30
+  }
+}
