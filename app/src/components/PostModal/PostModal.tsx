@@ -40,6 +40,8 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
   const { data: session } = useSession();
   const [image, setImage] = useState<ImageData | null>(null);
   const [slide, setSlide] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const current = image?.media[slide];
   const hasMany = (image?.media.length ?? 0) > 1;
@@ -50,10 +52,21 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
   useEffect(() => {
     setImage(null);
     setSlide(0);
+    setFullscreen(false);
     fetch(`/api/images/${imageId}`)
       .then((r) => r.json())
       .then(setImage);
   }, [imageId]);
+
+  // Tap-to-fullscreen for images is only enabled at the mobile breakpoint
+  // (video handles its own fullscreen natively on iOS).
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const next = useCallback(() => {
     if (!image) return;
@@ -67,8 +80,10 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowRight" && hasMany) next();
+      if (e.key === "Escape") {
+        if (fullscreen) setFullscreen(false);
+        else onClose();
+      } else if (e.key === "ArrowRight" && hasMany) next();
       else if (e.key === "ArrowLeft" && hasMany) prev();
     }
     document.addEventListener("keydown", onKey);
@@ -77,9 +92,11 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [onClose, next, prev, hasMany]);
+  }, [onClose, next, prev, hasMany, fullscreen]);
 
-  return createPortal(
+  return (
+    <>
+      {createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <div
         className={`${styles.modal} ${isLandscape ? styles.modalLandscape : ""}`}
@@ -109,8 +126,9 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
                 width={0}
                 height={0}
                 sizes="100vw"
-                className={styles.image}
+                className={`${styles.image} ${isMobile ? styles.imageZoomable : ""}`}
                 priority
+                onClick={isMobile ? () => setFullscreen(true) : undefined}
               />
             )
           ) : (
@@ -233,6 +251,28 @@ export function PostModal({ imageId, onClose }: PostModalProps) {
         </aside>
       </div>
     </div>,
-    document.body
+        document.body
+      )}
+
+      {fullscreen &&
+        current &&
+        current.mediaType !== "video" &&
+        createPortal(
+          <div
+            className={styles.fullscreen}
+            onClick={() => setFullscreen(false)}
+          >
+            <Image
+              src={current.url}
+              alt={image?.title ?? ""}
+              fill
+              sizes="100vw"
+              className={styles.fullscreenImg}
+              priority
+            />
+          </div>,
+          document.body
+        )}
+    </>
   );
 }
