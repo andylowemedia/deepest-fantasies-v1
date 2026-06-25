@@ -1,17 +1,19 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import styles from "./page.module.css";
 
 function AgeGateContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/";
 
   function confirm() {
     document.cookie = "age-verified=true; path=/; max-age=31536000; SameSite=Lax";
-    router.push(from);
+    // Full-page navigation (not router.push): forces a fresh server request that
+    // carries the just-set cookie so middleware re-evaluates it. A soft RSC nav
+    // races the cookie write in Safari and loops back to the gate.
+    window.location.href = from;
   }
 
   function deny() {
